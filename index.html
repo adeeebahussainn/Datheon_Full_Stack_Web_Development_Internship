@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaskFlow — Dynamic Task Manager & Productivity Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg></span>
+      <div><h1>TaskFlow</h1><p class="tagline">Small steps, steady progress.</p></div>
+    </div>
+    <div class="header-right">
+      <time id="today" class="date"></time>
+      <span class="avatar" role="img" aria-label="Profile placeholder">TF</span>
+    </div>
+  </header>
+
+  <section class="welcome card" aria-labelledby="greeting">
+    <div>
+      <h2 id="greeting">Let's make today productive!</h2>
+      <p id="motivation">Add your first task to get started.</p>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label"><span>Overall progress</span><strong id="progressText">0%</strong></div>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </section>
+
+  <section class="stats" aria-label="Task statistics">
+    <div class="stat lavender"><span>Total tasks</span><strong id="statTotal">0</strong></div>
+    <div class="stat mint"><span>Completed</span><strong id="statDone">0</strong></div>
+    <div class="stat blue"><span>Active</span><strong id="statActive">0</strong></div>
+    <div class="stat pink"><span>Overdue</span><strong id="statOverdue">0</strong></div>
+  </section>
+
+  <section class="card add" aria-labelledby="addTitle">
+    <h2 id="addTitle">Add a task</h2>
+    <form id="taskForm" novalidate>
+      <div class="field wide">
+        <label for="title">Title</label>
+        <input id="title" type="text" maxlength="80" placeholder="What needs to be done?" autocomplete="off">
+        <small class="error" id="titleError" role="alert"></small>
+      </div>
+      <div class="field wide">
+        <label for="desc">Description <span class="opt">(optional)</span></label>
+        <textarea id="desc" rows="2" maxlength="240" placeholder="Add a few details"></textarea>
+      </div>
+      <div class="field"><label for="category">Category</label>
+        <select id="category"><option>Work</option><option>Personal</option><option>Study</option></select></div>
+      <div class="field"><label for="due">Due date</label><input id="due" type="date"></div>
+      <div class="field"><label for="priority">Priority</label>
+        <select id="priority"><option>Low</option><option selected>Medium</option><option>High</option></select></div>
+      <button class="btn primary" type="submit">Add task</button>
+    </form>
+  </section>
+
+  <section class="card tasks" aria-labelledby="listTitle">
+    <div class="list-head">
+      <h2 id="listTitle">Your tasks</h2>
+      <button class="btn ghost" id="clearDone" type="button">Clear completed</button>
+    </div>
+    <div class="toolbar">
+      <div class="chips" id="filters" role="group" aria-label="Filter tasks"></div>
+      <div class="controls">
+        <input id="search" type="search" placeholder="Search tasks" aria-label="Search tasks">
+        <select id="sort" aria-label="Sort tasks">
+          <option value="manual">Manual order</option>
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="due">Due date</option>
+          <option value="priority">Priority</option>
+        </select>
+      </div>
+    </div>
+    <ul id="taskList" class="task-list"></ul>
+    <div id="empty" class="empty" hidden>
+      <svg viewBox="0 0 120 90" width="120" height="90" aria-hidden="true"><rect x="22" y="14" width="76" height="62" rx="12" fill="#E9E3F5"/><rect x="34" y="28" width="14" height="14" rx="4" fill="#DFF0E6"/><rect x="54" y="30" width="32" height="4" rx="2" fill="#F6E5EB"/><rect x="54" y="38" width="22" height="4" rx="2" fill="#DFEBF7"/><rect x="34" y="52" width="14" height="14" rx="4" fill="#DFEBF7"/><rect x="54" y="54" width="32" height="4" rx="2" fill="#F6E5EB"/></svg>
+      <h3 id="emptyTitle">No tasks yet</h3><p id="emptyText">Add a task above to start your list.</p>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="editModal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="editHeading">
+    <h2 id="editHeading">Edit task</h2>
+    <form id="editForm" novalidate>
+      <div class="field wide"><label for="eTitle">Title</label><input id="eTitle" type="text" maxlength="80"><small class="error" id="eError" role="alert"></small></div>
+      <div class="field wide"><label for="eDesc">Description</label><textarea id="eDesc" rows="2" maxlength="240"></textarea></div>
+      <div class="field"><label for="eCategory">Category</label><select id="eCategory"><option>Work</option><option>Personal</option><option>Study</option></select></div>
+      <div class="field"><label for="eDue">Due date</label><input id="eDue" type="date"></div>
+      <div class="field"><label for="ePriority">Priority</label><select id="ePriority"><option>Low</option><option>Medium</option><option>High</option></select></div>
+      <div class="actions wide"><button type="button" class="btn ghost" data-close>Cancel</button><button type="submit" class="btn primary">Save changes</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal" id="confirmModal" hidden>
+  <div class="dialog small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <h2 id="confirmTitle">Delete task?</h2>
+    <p id="confirmText"></p>
+    <div class="actions"><button type="button" class="btn ghost" data-close>Cancel</button><button type="button" class="btn danger" id="confirmOk">Delete</button></div>
+  </div>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<script src="script.js"></script>
+</body>
+</html>
